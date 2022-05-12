@@ -1,0 +1,28 @@
+---
+ - name: restarting the solana service (test net)
+   hosts: empty
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+   - name: stop solana service
+     shell: "systemctl stop solana.service"
+
+   - name: delete ledger
+     file:
+         state: absent
+         path: /root/solana/ledger/
+
+   - name: load ledger
+     shell: python3 snapshot-finder.py --snapshot_path $HOME/solana/ledger -r http://api.testnet.solana.com
+     register: result_load_ledger
+
+   - name: get results load ledger
+     debug: var=result_load_ledger.stdout_lines
+
+   - name: start solana service
+     shell: "systemctl start solana.service"
+     #when: TODO 

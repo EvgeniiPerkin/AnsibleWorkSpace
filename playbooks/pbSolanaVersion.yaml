@@ -14,4 +14,3 @@
 
    - name: Get results
      debug: var=result_operation.stdout_lines
-     

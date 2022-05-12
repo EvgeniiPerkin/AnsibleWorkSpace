@@ -1,0 +1,17 @@
+---
+ - name: get catchup for solana
+   hosts: ek_srv
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+   - name: get catchup
+     shell: "{{ solana }}/solana catchup --our-localhost"
+     register: result_operation
+
+   - name: Get results
+     debug: var=result_operation.stdout_lines
+     

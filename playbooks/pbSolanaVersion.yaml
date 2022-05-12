@@ -1,0 +1,16 @@
+---
+ - name: get version solana
+   hosts: all_srv
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+   - name: get version solana
+     shell: "{{ solana }}/solana --version"
+     register: result_operation
+
+   - name: Get results
+     debug: var=result_operation.stdout_lines

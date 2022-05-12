@@ -1,0 +1,24 @@
+---
+ - name: update for solana
+   hosts: all_srv
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+     number_version: 1.10.13
+
+   tasks:
+
+   - name: launch the update
+     shell: "{{ solana }}/solana-install init v{{ number_version }}"
+     register: result_update
+
+   - name: get results update
+     debug: var=result_update.stdout_lines
+
+   - name: launch the restart
+     shell: "systemctl restart solana.service && {{ solana }}/solana --version"
+     register: result_restart
+
+   - name: get results restart
+     debug: var=result_restart.stdout_lines

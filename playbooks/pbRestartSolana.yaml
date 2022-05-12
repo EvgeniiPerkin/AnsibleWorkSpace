@@ -1,0 +1,9 @@
+---
+ - name: restart for solana service
+   hosts: empty
+   become: true
+
+   tasks:
+
+   - name: restart solana
+     shell: "systemctl restart solana.service"

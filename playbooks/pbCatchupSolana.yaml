@@ -1,6 +1,6 @@
 ---
  - name: get catchup for solana
-   hosts: ek_srv
+   hosts: all_srv
    become: true
 
    vars:

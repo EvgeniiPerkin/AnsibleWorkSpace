@@ -1,6 +1,6 @@
 ---
  - name: restarting the solana service (test net)
-   hosts: empty
+   hosts: "{{ list_hosts }}"
    become: true
 
    vars:

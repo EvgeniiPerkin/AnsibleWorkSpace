@@ -1,6 +1,6 @@
 ---
  - name: update for solana
-   hosts: all_srv
+   hosts: "{{ list_hosts }}"
    become: true
 
    vars:

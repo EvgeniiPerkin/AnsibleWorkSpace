@@ -1,6 +1,6 @@
 ---
  - name: restart for solana service
-   hosts: empty
+   hosts: "{{ list_hosts }}"
    become: true
 
    tasks:

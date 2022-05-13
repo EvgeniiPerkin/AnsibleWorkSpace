@@ -1,5 +1,5 @@
 ---
- - hosts: all_srv 
+ - hosts: "{{ list_hosts }}" 
    become: true
 
    tasks:

@@ -1,2 +1,3 @@
 ---
-# vars file for install_solana
+solana_path: /root/.local/share/solana/install/active_release/bin
+solana_version: 1.10.13

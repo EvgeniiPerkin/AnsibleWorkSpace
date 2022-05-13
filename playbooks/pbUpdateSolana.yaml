@@ -5,7 +5,7 @@
 
    vars:
      solana: /root/.local/share/solana/install/active_release/bin
-     number_version: 1.10.13
+     number_version: "{{ num_version }}"
 
    tasks:
 

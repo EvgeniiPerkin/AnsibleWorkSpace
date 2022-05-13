@@ -1,6 +1,14 @@
 ОСНОВНЫЕ ПЛЕЙБУКИ ДЛЯ РАБОТЫ
 ============================
 
+pbInstallSolana.yml
+-------------------
+
+Установка чистой соланы (по роли install_solana)
+Пример использования:
+
+      ansible-playbook pbInstallSolana.yml --extra-var "list_hosts=$HOSTS"
+
 pbCatchupSolana.yaml
 --------------------
 

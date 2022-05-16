@@ -1,0 +1,35 @@
+---
+ - name: test play book
+   hosts: 1_WE
+   become: true
+
+   tasks:
+    - name: shell --version
+      shell:
+          cmd: wget -qO- https://api.github.com/repos/massalabs/massa/releases/latest | jq -r ".tag_name"
+      register: massa_version
+          
+    - name: load archive
+      shell:
+          cmd: wget -qO $HOME/massa.tar.gz "https://github.com/massalabs/massa/releases/download/{{ massa_version.stdout }}/massa_{{ massa_version.stdout }}_release_linux.tar.gz"
+
+    - name: view
+      debug: var=massa_version.stdout_lines
+    #- name: create file service
+    #  copy:
+    #   dest: "/root/test.service"
+    #    content: |
+    #        [Unit]
+    #        Description=Massa Node
+    #        After=network-online.target
+
+    #        [Service]
+    #        User=$USER
+    #        WorkingDirectory=$HOME/massa/massa-node
+    #        ExecStart=$HOME/massa/target/release/massa-node
+    #        Restart=on-failure
+    #        RestartSec=3
+    #        LimitNOFILE=65535
+
+    #        [Install]
+    #        WantedBy=multi-user.target

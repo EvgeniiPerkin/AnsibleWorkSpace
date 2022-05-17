@@ -7,15 +7,12 @@
        ho: ansible_env.HOME
 
    tasks:
-     - name: check for a directory
-       ansible.builtin.stat:
-           path: "{{ ansible_env.HOME }}/massa/"
-       register: p
-
-     - name: Print a debug message
-       ansible.builtin.debug:
-           msg: "Path exists and is a directory"
-       when: p.stat.isdir is defined and p.stat.isdir
+         - name: copy wallet.dat
+           copy: 
+               src: /root/test/test.txt
+               dest: /root/test2/test.txt
+               mode: 0644
+               remote_src: yes
     #- name: shell --version
     #  shell:
     #      cmd: wget -qO- https://api.github.com/repos/massalabs/massa/releases/latest | jq -r ".tag_name"

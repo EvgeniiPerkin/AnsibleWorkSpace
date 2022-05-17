@@ -2,7 +2,7 @@
  - name: Installing coin massa
    hosts: "{{ list_hosts }}"
    become: true
-
+           
    tasks:
 
      - name: check for a directory
@@ -63,9 +63,8 @@
                    WantedBy=multi-user.target
 
          - name: enable massad
-           ansible.builtin.systemd: 
-               name: massad
-               enabled: true
+           shell: 
+               cmd: systemctl enable massad
 
          - name: daemon-reload
            ansible.builtin.systemd: 
@@ -116,7 +115,11 @@
          # end open_ports
 
          - name: go to massa-client folder
-           shell: chdir=/root/massa/massa-client/ ls
+           shell: chdir={{ ansible_env.HOME }}/massa/massa-client ./massa-client wallet_generate_private_key
+           register: new_key
+
+         - name: get new_key
+           debug: var=new_key.stdout_lines
 
          - name: check for a directory massa_backup
            stat:
@@ -124,15 +127,22 @@
            register: dir_exists_massa_backup
 
          # if not exist massa_backup
-         - name: generate private key 
-           raw: ./massa-client wallet_generate_private_key
-           when: not dir_exists_massa_backup.stat.exists
+         #- name: generate private key 
+         #  shell: ./massa-client wallet_generate_private_key
+         #  register: key
+         #  ignore_errors: true
+         #  when: not dir_exists_massa_backup.stat.exists
+
+         #- name: get wget
+         #  debug: var=key.stdout_lines
+         #  when: not dir_exists_massa_backup.stat.exists
          # else
          - name: copy node_privkey.key
            ansible.builtin.copy:
                src: "{{ ansible_env.HOME }}/massa_backup/node_privkey.key"
                dest: "{{ ansible_env.HOME }}/massa/massa-node/config/node_privkey.key"
-               mode: '0555'
+               mode: 0644
+               remote_src: yes
            when: dir_exists_massa_backup.stat.exists
 
          - name: restart massad
@@ -145,12 +155,14 @@
            ansible.builtin.copy:
                src: "{{ ansible_env.HOME }}/massa_backup/wallet.dat"
                dest: "{{ ansible_env.HOME }}/massa/massa-client/wallet.dat"
-               mode: '0555'
+               mode: 0644
+               remote_src: yes
            when: dir_exists_massa_backup.stat.exists
          # end if
 
          - name: wget insert variables
-           shell: ". <(wget -qO- https://raw.githubusercontent.com/SecorD0/Massa/main/insert_variables.sh)"
+           shell: 
+               cmd: . <(wget -qO- https://raw.githubusercontent.com/SecorD0/Massa/main/insert_variables.sh)
            args:
                executable: /bin/bash
            register: result_wget
@@ -164,19 +176,21 @@
                path: "{{ ansible_env.HOME }}/massa_backup"
                state: directory
            when: not dir_exists_massa_backup.stat.exists
-
+           
          - name: copy wallet.dat
-           ansible.builtin.copy:
+           copy: 
                src: "{{ ansible_env.HOME }}/massa/massa-client/wallet.dat"
                dest: "{{ ansible_env.HOME }}/massa_backup/wallet.dat"
-               mode: '0555'
+               mode: 0644
+               remote_src: yes
            when: not dir_exists_massa_backup.stat.exists
 
          - name: copy private key 
            ansible.builtin.copy:
                src: "{{ ansible_env.HOME }}/massa/massa-node/config/node_privkey.key"
                dest: "{{ ansible_env.HOME }}/massa_backup/node_privkey.key"
-               mode: '0555'
+               mode: 0644
+               remote_src: yes
            when: not dir_exists_massa_backup.stat.exists
          # end if
          

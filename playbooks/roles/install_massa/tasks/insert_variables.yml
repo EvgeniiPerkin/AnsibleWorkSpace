@@ -1,7 +1,7 @@
 ---
 - name: insert variables
   shell: 
-      cmd: . <(wget -qO- https://raw.githubusercontent.com/SecorD0/Massa/main/insert_variables.sh)
+      cmd: chdir={{ ansible_env.HOME }}/massa/massa-client . <(wget -qO- https://raw.githubusercontent.com/SecorD0/Massa/main/insert_variables.sh)
   args:
       executable: /bin/bash
   register: result_wget

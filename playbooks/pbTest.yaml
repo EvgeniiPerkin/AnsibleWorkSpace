@@ -7,12 +7,23 @@
        ho: ansible_env.HOME
 
    tasks:
-         - name: copy wallet.dat
-           copy: 
-               src: /root/test/test.txt
-               dest: /root/test2/test.txt
-               mode: 0644
-               remote_src: yes
+
+    #- name: get massa version
+    #  shell:
+    #      cmd: wget -qO- https://api.github.com/repos/massalabs/massa/releases/latest | jq -r ".tag_name"
+    #  register: massa_version
+   
+    #- name: load archive
+    #  shell:
+    #      cmd: wget -qO {{ ansible_env.HOME }}/massa.tar.gz "https://github.com/massalabs/massa/releases/download/{{ massa_version.stdout }}/massa_{{ massa_version.stdout }}_release_linux.tar.gz"
+
+    - name: unpack archive
+      shell:
+          cmd: tar -xvf {{ ansible_env.HOME }}/massa.tar.gz
+
+    - name: delete archive
+      shell:
+          cmd: rm -rf {{ ansible_env.HOME }}/massa.tar.gz
     #- name: shell --version
     #  shell:
     #      cmd: wget -qO- https://api.github.com/repos/massalabs/massa/releases/latest | jq -r ".tag_name"

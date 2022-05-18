@@ -1,0 +1,16 @@
+---
+- name: load archive
+  shell:
+      cmd: wget -qO {{ ansible_env.HOME }}/massa.tar.gz "https://github.com/massalabs/massa/releases/download/{{ version }}/massa_{{ version }}_release_linux.tar.gz"
+
+- name: unpack archive
+  shell:
+      cmd: tar -xvf {{ ansible_env.HOME }}/massa.tar.gz
+
+- name: delete archive
+  shell:
+      cmd: rm -rf {{ ansible_env.HOME }}/massa.tar.gz
+
+- name: chmod files
+  shell:
+      cmd: chmod +x {{ ansible_env.HOME }}/massa/massa-node/massa-node {{ ansible_env.HOME }}/massa/massa-client/massa-client

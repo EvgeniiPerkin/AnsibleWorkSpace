@@ -1,0 +1,19 @@
+---
+- name: create file service
+  copy:
+      dest: "/etc/systemd/system/massad.service"
+      content: |
+        [Unit]
+        Description=Massa Node
+        After=network-online.target
+
+        [Service]
+        User={{ ansible_env.USER }}
+        WorkingDirectory={{ ansible_env.HOME }}/massa/massa-node
+        ExecStart={{ ansible_env.HOME }}/massa/massa-node/massa-node
+        Restart=on-failure
+        RestartSec=3
+        LimitNOFILE=65535
+
+        [Install]
+        WantedBy=multi-user.target

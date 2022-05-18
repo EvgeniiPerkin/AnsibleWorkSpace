@@ -1,0 +1,42 @@
+---
+- name: open_ports stop massad
+  ansible.builtin.systemd: 
+      name: massad
+      state: stopped
+
+- name: open_ports open ports
+  shell: 
+      cmd: . <(wget -qO- https://raw.githubusercontent.com/SecorD0/utils/main/miscellaneous/ports_opening.sh) 31244 31245
+  args:
+      executable: /bin/bash
+  register: open_ports_result
+
+- name: print result open ports
+  debug: var=open_ports_result.stdout_lines
+
+- name: open_ports tee
+  shell: |
+      tee <<EOF >/dev/null {{ ansible_env.HOME }}/massa/massa-node/config/config.toml
+      [network]
+      routable_ip = "`wget -qO- eth0.me`"
+      EOF
+  args:
+      executable: /bin/bash
+
+- name: open_ports install net-tools
+  apt: 
+      name: net-tools
+      state: latest
+
+- name: open_ports netstat
+  shell: 
+      cmd: /bin/netstat -tln
+  register: netstat_result 
+         
+- name: print result
+  debug: var=netstat_result.stdout_lines
+
+- name: open_ports restart massad
+  ansible.builtin.systemd: 
+      name: massad
+      state: restarted

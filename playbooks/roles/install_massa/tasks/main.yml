@@ -3,10 +3,10 @@
 - name: check for a directory massa
   stat:
       path: "{{ ansible_env.HOME }}/massa/"
-      register: dir_exists
+  register: dir_exists
 
 - block:
-    - include: update_upgrade.yml
+    - include_tasks: update_upgrade.yml
 
     - name: installing application
       shell: "apt install jq curl pkg-config git build-essential libssl-dev -y"
@@ -18,9 +18,9 @@
     - name: get massa version
       shell:
           cmd: wget -qO- https://api.github.com/repos/massalabs/massa/releases/latest | jq -r ".tag_name"
-          register: massa_version
+      register: massa_version
     
-    - include: working_with_archive.yml version=massa_version.stdout
+    - include_tasks: working_with_archive.yml
 
     - name: generate service file
       template: src=massad.j2 dest=/etc/systemd/system/massad.service mode=0555
@@ -33,12 +33,12 @@
       ansible.builtin.systemd: 
           daemon_reload: true
 
-    - include: open_ports.yml
+    - include_tasks: open_ports.yml
 
     - name: check for a directory massa_backup
       stat:
           path: "{{ ansible_env.HOME }}/massa_backup"
-          register: dir_exists_massa_backup
+      register: dir_exists_massa_backup
          
     - block: 
         - name: go to massa-client folder
@@ -48,8 +48,11 @@
         - name: get new_key
           debug: var=new_key.stdout_lines
           
-        - include: insert_variables.yml
-
+        - include_tasks: insert_variables.yml
+        
+        - name: sleep 2 second
+          command: /bin/sleep 2
+        
         - name: create directory massa backup
           file:
               path: "{{ ansible_env.HOME }}/massa_backup"
@@ -63,7 +66,7 @@
               remote_src: yes
         
         - name: copy private key 
-          ansible.builtin.copy:
+          copy:
               src: "{{ ansible_env.HOME }}/massa/massa-node/config/node_privkey.key"
               dest: "{{ ansible_env.HOME }}/massa_backup/node_privkey.key"
               mode: 0644
@@ -72,7 +75,7 @@
 
     - block: 
         - name: copy node_privkey.key
-          ansible.builtin.copy:
+          copy:
               src: "{{ ansible_env.HOME }}/massa_backup/node_privkey.key"
               dest: "{{ ansible_env.HOME }}/massa/massa-node/config/node_privkey.key"
               mode: 0644
@@ -84,12 +87,12 @@
               state: restarted
 
         - name: copy private key 
-          ansible.builtin.copy:
+          copy:
               src: "{{ ansible_env.HOME }}/massa_backup/wallet.dat"
               dest: "{{ ansible_env.HOME }}/massa/massa-client/wallet.dat"
               mode: 0644
               remote_src: yes
-        - include: insert_variables.yml
+        - include_tasks: insert_variables.yml
 
       when: dir_exists_massa_backup.stat.exists
       

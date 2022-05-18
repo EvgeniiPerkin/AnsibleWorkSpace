@@ -1,7 +1,7 @@
 ---
 - name: load archive
   shell:
-      cmd: wget -qO {{ ansible_env.HOME }}/massa.tar.gz "https://github.com/massalabs/massa/releases/download/{{ version }}/massa_{{ version }}_release_linux.tar.gz"
+      cmd: wget -qO {{ ansible_env.HOME }}/massa.tar.gz "https://github.com/massalabs/massa/releases/download/{{ massa_version.stdout }}/massa_{{ massa_version.stdout }}_release_linux.tar.gz"
 
 - name: unpack archive
   shell:

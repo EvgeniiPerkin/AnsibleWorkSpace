@@ -7,13 +7,16 @@
 
 - block:
     - include_tasks: update_upgrade.yml
-
-    - name: installing application
-      shell: "apt install jq curl pkg-config git build-essential libssl-dev -y"
-      register: result_installing
-
-    - name: get results installing
-      debug: var=result_installing.stdout_lines
+ 
+    - name: install packages
+      apt: pkg={{ item }} state=latest
+      with_items:
+        - jq
+        - curl
+        - pkg-config
+        - git
+        - build-essential
+        - libssl-dev
 
     - name: get massa version
       shell:

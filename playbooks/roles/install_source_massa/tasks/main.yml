@@ -32,9 +32,48 @@
       shell:
           cmd: . <(wget -qO- https://raw.githubusercontent.com/SecorD0/utils/main/installers/rust.sh) -n
       register: script_wget
-
     - name: get result script wget
       debug: var=script_wget.stdout_lines
 
+    - name: git clone 
+      shell:
+          cmd: git clone --branch testnet https://gitlab.com/massalabs/massa.git
+      register: git_clone 
+    - name: get result script wget
+      debug: var=git_clone.stdout_lines
 
+    - name: go to massa-node folder and RUST_BACKTRACE
+      shell: chdir={{ ansible_env.HOME }}/massa/massa-node/ RUST_BACKTRACE=full cargo build --release
+      register: RUST_BACK
+    - name: get result go to massa-node folder and RUST_BACKTRACE
+      debug: var=RUST_BACK.stdout_lines
+
+    - name: generate service file
+      template: src=massad.j2 dest=/etc/systemd/system/massad.service mode=0555
+
+    - name: enable massad
+      shell: 
+          cmd: systemctl enable massad
+
+    - name: daemon-reload
+      ansible.builtin.systemd: 
+          daemon_reload: true
+
+    - include_tasks: open_ports.yml
+
+    - name: msg
+      debug: 
+          msg: Done! Client installation...
+
+    - name: go to massa-client folder and cargo run
+      shell: chdir={{ ansible_env.HOME }}/massa/massa-client/ cargo run --release wallet_new_privkey
+      register: cargo
+    - name: get result go to massa-client folder and cargo run
+      debug: var=cargo.stdout_lines
+
+    - name: go to massa-client folder and wget
+      shell: chdir={{ ansible_env.HOME }}/massa/massa-client/ . <(wget -qO- https://raw.githubusercontent.com/SecorD0/utils/main/miscellaneous/insert_variable.sh) -n massa_log -v "sudo journalctl -f -n 100 -u massad" -a
+      register: wget_client
+    - name: get result go to massa-client folder and cargo run
+      debug: var=wget_client.stdout_lines
   when: not dir_exists.stat.exists

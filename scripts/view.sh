@@ -1,4 +1,8 @@
 #!/bin/bash
+# Default variables
+function="get_info"
+source="false"
+
 echo -e "\033[1;32m"
 echo -e "*****************************"
 echo -e "\033[1;36m"
@@ -19,3 +23,9 @@ echo -e "\033[0m"
 
 # Functions
 printf_n(){ printf "$1\n" "${@:2}"; }
+get_info(){
+    printf_n "${C_LGn}Обновляем пакеты...${RES}"
+    sudo apt update && apt upgrade -y
+    printf_n "${C_LGn}Готово...${RES}"
+}
+$function

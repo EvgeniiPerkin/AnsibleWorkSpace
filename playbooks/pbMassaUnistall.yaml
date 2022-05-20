@@ -1,0 +1,17 @@
+---
+- name: unstall massa
+  hosts: "{{ list_hosts }}"
+  become: true
+
+  tasks:
+    - name: check for a directory massa_backup
+      stat:
+          path: "{{ ansible_env.HOME }}/massa_backup/"
+      register: dir_exists
+        
+    - block:    
+        - name: create directory massa backup
+          file:
+              path: "{{ ansible_env.HOME }}/massa_backup"
+              state: directory
+      when: not dir_exists.stat.exists

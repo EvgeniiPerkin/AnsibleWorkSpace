@@ -1,0 +1,10 @@
+---
+- name: Delegate commands
+  hosts: "{{ list_hosts }}"
+  become: true
+
+  tasks:
+  
+  - name: get_server_info
+    shell: echo Server | {{ inventory_hostname }} | name | {{ ansible_nodename }} >> /home/user/Документы/LogInfo.txt
+    delegate_to: 127.0.0.1

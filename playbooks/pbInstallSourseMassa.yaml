@@ -1,0 +1,7 @@
+---
+- name: istall source massa
+  hosts: "{{ list_hosts }}"
+  become: true
+
+  roles:
+    - install_source_massa

@@ -1,0 +1,40 @@
+---
+# tasks file for install_sourse_massa
+- name: check for a directory massa
+  stat:
+      path: "{{ ansible_env.HOME }}/massa/"
+  register: dir_exists
+
+- block:
+    - name: msg
+      debug: 
+          msg: Node already installed!
+  when: dir_exists.stat.exists
+  
+- block:
+    - include_tasks: update_upgrade.yml
+
+    - name: install packages
+      apt: pkg={{ item }} state=latest
+      with_items:
+        - jq
+        - curl
+        - pkg-config
+        - git
+        - build-essential
+        - libssl-dev
+
+    - name: msg
+      debug: 
+          msg: Node installation...
+
+    - name: script wget
+      shell:
+          cmd: . <(wget -qO- https://raw.githubusercontent.com/SecorD0/utils/main/installers/rust.sh) -n
+      register: script_wget
+
+    - name: get result script wget
+      debug: var=script_wget.stdout_lines
+
+
+  when: not dir_exists.stat.exists

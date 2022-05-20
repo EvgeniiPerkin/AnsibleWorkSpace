@@ -8,6 +8,9 @@
 
    tasks:
 
+    - name: msg
+      debug: 
+          msg: hello!
     #- name: get massa version
     #  shell:
     #      cmd: wget -qO- https://api.github.com/repos/massalabs/massa/releases/latest | jq -r ".tag_name"
@@ -17,13 +20,13 @@
     #  shell:
     #      cmd: wget -qO {{ ansible_env.HOME }}/massa.tar.gz "https://github.com/massalabs/massa/releases/download/{{ massa_version.stdout }}/massa_{{ massa_version.stdout }}_release_linux.tar.gz"
 
-    - name: unpack archive
-      shell:
-          cmd: tar -xvf {{ ansible_env.HOME }}/massa.tar.gz
+    #- name: unpack archive
+    #  shell:
+    #      cmd: tar -xvf {{ ansible_env.HOME }}/massa.tar.gz
 
-    - name: delete archive
-      shell:
-          cmd: rm -rf {{ ansible_env.HOME }}/massa.tar.gz
+    #- name: delete archive
+    #  shell:
+    #      cmd: rm -rf {{ ansible_env.HOME }}/massa.tar.gz
     #- name: shell --version
     #  shell:
     #      cmd: wget -qO- https://api.github.com/repos/massalabs/massa/releases/latest | jq -r ".tag_name"

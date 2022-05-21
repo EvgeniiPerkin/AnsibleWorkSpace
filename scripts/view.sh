@@ -23,6 +23,10 @@ echo -e "\033[0m"
 
 # Functions
 printf_n(){ printf "$1\n" "${@:2}"; }
+if ["$#" -lt 1]; then
+    echo "Отсутствуют аргументы"
+    return o
+fi
 get_info(){
     printf_n "${C_LGn}Обновляем пакеты...${RES}"
     sudo apt update && apt upgrade -y

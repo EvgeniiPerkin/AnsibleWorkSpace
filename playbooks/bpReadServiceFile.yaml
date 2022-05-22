@@ -1,0 +1,12 @@
+---
+- name: read service file solana
+  hosts: "{{ list_hosts }}"
+  become: true
+
+  tasks: 
+   - name: shell
+     shell: cat /root/solana/solana.service
+     register: var_dat
+
+   - name: get results  
+     debug: var=var_dat.stdout_lines

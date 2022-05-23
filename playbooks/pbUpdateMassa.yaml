@@ -1,0 +1,7 @@
+---
+- name: update massa
+  hosts: "{{ list_hosts }}"
+  become: true
+
+  roles:
+    - update_massa

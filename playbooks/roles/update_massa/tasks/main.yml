@@ -1,0 +1,5 @@
+---
+# tasks file for update_massa
+- name: file exists
+  stat:
+      path: {{ ansible }}

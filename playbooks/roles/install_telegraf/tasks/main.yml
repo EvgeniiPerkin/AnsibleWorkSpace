@@ -1,0 +1,74 @@
+---
+# tasks file for install_telegraf
+
+- name: get version solana
+  shell: "{{ solana }}/solana address"
+  register: solana_address
+
+- name: install telegraf
+  shell: |
+      cat <<EOF | sudo tee /etc/apt/sources.list.d/influxdata.list
+      deb https://repos.influxdata.com/ubuntu bionic stable
+      EOF
+      sudo curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+  register: result_install
+
+- name: print result install telegraf
+  debug: var=result_install.stdout_lines
+
+- name: update and upgrade apt packages
+  apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400
+
+- name: install packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - jq
+    - telegraf
+    - bc
+    - git
+
+- name: Add sudoers and adm telegraf  
+  user:
+      name=telegraf
+      groups=sudo,adm
+      append=yes
+      state=present
+
+- name: Allow telegraf to have passwordless sudo
+  lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^telegraf'
+      line: 'telegraf ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+
+- name: copy telegraf.conf
+  copy: 
+      src: /etc/telegraf/telegraf.conf
+      dest: /etc/telegraf/telegraf.conf.orig
+      mode: 0644
+      remote_src: yes
+
+- name: Delete telegraf.conf
+  file:
+    state: absent
+    path: /etc/telegraf/telegraf.conf
+
+- name: clone solanamonitoring
+  ansible.builtin.git:
+    repo: 'https://github.com/stakeconomy/solanamonitoring/'
+    dest: /root/solana/solanamonitoring
+    update: no
+
+- name: generate new telegraf.conf
+  template: src=telegraf.j2 dest=/etc/telegraf/telegraf.conf mode=0555
+
+- name: systemctl
+  shell: |
+        sudo systemctl enable --now telegraf
+        sudo systemctl is-enabled telegraf
+        sudo systemctl restart telegraf
+

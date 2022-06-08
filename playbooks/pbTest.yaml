@@ -3,14 +3,17 @@
    hosts: 95_EK
    become: true
 
-   vars: 
-       ho: ansible_env.HOME
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
 
    tasks:
 
-    - name: msg
-      debug: 
-          msg: hello!
+   - name: get version solana
+     shell: "{{ solana }}/solana address"
+     register: result_operation
+
+   - name: Get results
+     debug: var=result_operation.stdout_lines
     #- name: get massa version
     #  shell:
     #      cmd: wget -qO- https://api.github.com/repos/massalabs/massa/releases/latest | jq -r ".tag_name"

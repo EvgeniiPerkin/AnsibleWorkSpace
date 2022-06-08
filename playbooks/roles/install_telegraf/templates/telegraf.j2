@@ -1,0 +1,37 @@
+# Global Agent Configuration
+[agent]
+  hostname = "{{ solana_address.stdout }}" 
+  flush_interval = "15s"
+  interval = "15s"
+
+# Input Plugins
+[[inputs.cpu]]
+    percpu = true
+    totalcpu = true
+    collect_cpu_time = false
+    report_active = false
+[[inputs.disk]]
+    ignore_fs = ["devtmpfs", "devfs"]
+[[inputs.io]]
+[[inputs.mem]]
+[[inputs.net]]
+[[inputs.system]]
+[[inputs.swap]]
+[[inputs.netstat]]
+[[inputs.processes]]
+[[inputs.kernel]]
+[[inputs.diskio]]
+
+# Output Plugin InfluxDB
+[[outputs.influxdb]]
+  database = "metricsdb"
+  urls = [ "{{ output_host }}" ] 
+  username = "metrics" # keep both values if you use the community dashboard
+  password = "{{ password_db }}"
+
+[[inputs.exec]]
+  commands = ["sudo su -c /root/solana/solanamonitoring/monitor.sh -s /bin/bash root"] # change home and username to the usera>
+  interval = "5m"
+  timeout = "1m"
+  data_format = "influx"
+  data_type = "integer"

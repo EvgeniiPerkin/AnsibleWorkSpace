@@ -1,0 +1,37 @@
+---
+ - name: get catchup for solana
+   hosts: "{{ list_hosts }}"
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+    - name: get vote balance
+      shell: "{{ solana }}/solana balance /root/solana/vote-account-keypair.json"
+      register: vote_balance
+
+    - name: print vote balance
+      debug: var=vote_balance.stdout_lines
+
+   # - name: get balance
+   #   shell: "{{ solana }}/solana balance"
+   #   register: balance_b
+
+   # - name: print balance
+   #   debug: var=balance_b.stdout_lines
+
+   # - name: set vote balance
+   #   shell: "{{ solana }}/solana withdraw-from-vote-account /root/solana/vote-account-keypair.json /root/solana/validator-keypair.json 100"
+   #   register: set_vote_balance
+
+   # - name: print set vote balance
+   #   debug: var=set_vote_balance.stdout_lines
+
+  #  - name: get balance add
+  #    shell: "{{ solana }}/solana balance"
+  #    register: balance_add
+
+  #  - name: print balance add
+  #    debug: var=balance_add.stdout_lines

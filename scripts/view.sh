@@ -29,7 +29,11 @@ if ["$#" -lt 1]; then
 fi
 get_info(){
     printf_n "${C_LGn}Обновляем пакеты...${RES}"
-    sudo apt update && apt upgrade -y
+    # sudo apt update && apt upgrade -y
     printf_n "${C_LGn}Готово...${RES}"
 }
+echo "1234567890"  | sed -r ':L;s=\b([0-9]+)([0-9]{3})\b=\1 \2=g;t L'
+
+if [[ 2 -gt 1 ]]; then echo "1 условие ложное"; fi
+if [[ 1 -lt 2 ]]; then echo "2 условие ложное"; fi
 $function

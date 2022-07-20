@@ -1,0 +1,13 @@
+---
+ - name: get starknet info
+   hosts: starknet
+   become: true
+
+   tasks:
+   - name: query info
+     shell: journalctl -u starknetd -n
+     register: output_starknet
+
+   - name: get result info
+     debug:
+      var: output_starknet.stdout_lines

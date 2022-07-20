@@ -1,0 +1,13 @@
+---
+ - name: get sui info
+   hosts: sui
+   become: true
+
+   tasks:
+   - name: query info
+     shell: journalctl -u suid -n -o cat
+     register: output_sui
+
+   - name: get result info
+     debug:
+      var: output_sui.stdout_lines

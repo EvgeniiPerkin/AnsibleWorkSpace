@@ -1,0 +1,13 @@
+---
+ - name: get massa info
+   hosts: massa
+   become: true
+
+   tasks:
+   - name: query info
+     shell: chdir=/root/massa/massa-client ./massa-client -p {{ pwd }} -j wallet_info
+     register: output_massa
+
+   - name: get result info
+     debug: 
+      var: output_massa.stdout

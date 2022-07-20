@@ -1,0 +1,13 @@
+---
+ - name: get info bunglr
+   hosts: bundlr
+   become: true
+
+   tasks:
+   - name: start
+     shell: cd $HOME/bundlr/validator-rust && docker-compose logs --tail 10
+     register: outpt
+
+   - name: get result info
+     debug:
+      var: outpt.stdout_lines

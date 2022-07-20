@@ -1,0 +1,25 @@
+---
+- name: update starknet
+  hosts: "{{ list_hosts }}"
+  become: true
+
+  tasks:
+
+  - name: Download sh
+    get_url: 
+      url: https://raw.githubusercontent.com/EvgeniiPerkin/scripts/main/starknet.sh 
+      dest: /tmp/
+      mode: 0755
+    
+  - name: Execute the starknet.sh
+    shell: /bin/bash /tmp/starknet.sh
+    register: output_sh
+
+  - name: Print result
+    debug: var=output_sh.stdout
+
+  - name: Remove the starknet.sh
+    file: 
+      path: /tmp/starknet.sh 
+      state: absent
+

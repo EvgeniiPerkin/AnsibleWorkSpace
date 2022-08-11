@@ -1,6 +1,6 @@
 ---
  - name: test play book
-   hosts: 95_EK
+   hosts: not_ek_srv
    become: true
 
    vars:
@@ -8,12 +8,20 @@
 
    tasks:
 
-   - name: get version solana
-     shell: "{{ solana }}/solana address"
-     register: result_operation
+  # - name: copy solana.service
+  #   copy: 
+  #      src: /home/user/work/test.txt
+  #      dest: /root/test.txt
+  #      mode: 0644
+  #      backup: yes
 
-   - name: Get results
-     debug: var=result_operation.stdout_lines
+   - name: c
+     shell: "tail -n 5000 /root/solana/solana.log | grep visible"
+     register: result_stop
+
+   - name: get results stop
+     debug: var=result_stop.stdout
+
     #- name: get massa version
     #  shell:
     #      cmd: wget -qO- https://api.github.com/repos/massalabs/massa/releases/latest | jq -r ".tag_name"

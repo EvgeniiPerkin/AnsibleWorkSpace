@@ -1,0 +1,36 @@
+---
+ - name: stop solana service
+   hosts: not_ek_srv
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+   # - name: stop
+   #  shell: "systemctl stop solana"
+
+   - name: copy solana.service
+     copy: 
+        src: /home/user/work/solana/10_08_2022/solana.service
+        dest: /root/solana/solana.service
+        mode: 0644
+        backup: yes
+
+   - name: rm 
+     shell: "rm -rf /root/solana/ledger/*"
+
+   - name: reload systemd
+     command: systemctl daemon-reload
+  
+   - name: launch the restart
+     shell: "systemctl restart solana"
+
+   #- name: launch the update
+   #  shell: "{{ solana }}/solana-ledger-tool --ledger /root/solana/ledger create-snapshot 144871251 /root/solana/ledger --hard-fork 144871251"
+   #  register: result_stop
+   #  ignore_errors: true
+
+   #- name: get results stop
+   #  debug: var=result_stop.stdout

@@ -1,7 +1,7 @@
 ---
-- name: installing the tlegraf for monitoring solana
-  hosts: "{{ list_hosts }}"
-  become: true
+ - name: installing
+   hosts: "{{ list_hosts }}"
+   become: true
 
-  roles:
-    - install_telegraf
+   roles:
+     - install_telegraf

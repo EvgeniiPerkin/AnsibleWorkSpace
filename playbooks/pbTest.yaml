@@ -1,6 +1,6 @@
 ---
  - name: test play book
-   hosts: not_ek_srv
+   hosts: real
    become: true
 
    vars:
@@ -16,7 +16,7 @@
   #      backup: yes
 
    - name: c
-     shell: "tail -n 5000 /root/solana/solana.log | grep visible"
+     shell: systemctl status solana | grep "Active"
      register: result_stop
 
    - name: get results stop

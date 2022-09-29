@@ -1,0 +1,12 @@
+---
+ - name: test play book
+   hosts: subspace2
+   become: true
+
+   tasks:
+   - name: command
+     shell: journalctl -u subspace-node -n | grep Imported
+     register: result
+
+   - name: get results
+     debug: var=result.stdout_lines

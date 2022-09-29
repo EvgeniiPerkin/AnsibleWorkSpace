@@ -1,0 +1,12 @@
+---
+ - name: test play book
+   hosts: subspace1
+   become: true
+
+   tasks:
+   - name: command
+     shell: chdir=/root/subspace docker-compose logs --tail=5 | grep Imported
+     register: result
+
+   - name: get results
+     debug: var=result.stdout_lines

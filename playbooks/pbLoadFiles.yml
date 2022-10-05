@@ -1,0 +1,30 @@
+---
+ - name: get catchup for solana
+   hosts: "{{ list_hosts }}"
+   become: true
+
+   vars:
+      solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+    - name: get version solana
+      shell: "{{ solana }}/solana address"
+      register: solana_address
+
+    - name: print address
+      debug: var=solana_address.stdout
+    
+    - name: loading_files
+      fetch:
+          src: /root/solana/{{ item }}
+          dest: /home/user/work/solana/backup_keys/mainnet/{{ solana_address.stdout }}/
+          flat: true
+      register: loading_out
+      loop:
+          - solana.service
+          - solana.logrotate
+          - vote-account-keypair.json
+          - validator-keypair.json
+
+    - name: out loading
+      debug: var=loading_out.stdout_lines

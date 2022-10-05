@@ -9,7 +9,7 @@
    tasks:
 
    - name: stop solana service
-     shell: "systemctl stop solana.service"
+     shell: "systemctl stop solana.service && cd /root/solana/solana-snapshot-finder"
 
    - name: delete ledger
      file:
@@ -17,7 +17,9 @@
          path: /root/solana/ledger/
 
    - name: load ledger
-     shell: python3 snapshot-finder.py --snapshot_path $HOME/solana/ledger -r http://api.testnet.solana.com
+     shell: source ./venv/bin/activate && python3 snapshot-finder.py --snapshot_path $HOME/solana/ledger -r http://api.testnet.solana.com
+     args:
+         executable: /bin/bash
      register: result_load_ledger
 
    - name: get results load ledger
@@ -25,4 +27,3 @@
 
    - name: start solana service
      shell: "systemctl start solana.service"
-     #when: TODO 

@@ -5,7 +5,7 @@
 
    tasks:
    - name: start
-     shell: cd $HOME/bundlr/validator-rust && docker-compose logs --tail 10
+     shell: cd $HOME/bundlr/validator-rust && docker-compose logs --tail 10 | grep validator
      register: outpt
 
    - name: get result info

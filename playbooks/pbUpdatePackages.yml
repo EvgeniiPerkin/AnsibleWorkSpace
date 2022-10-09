@@ -1,6 +1,6 @@
 ---
  - name: test play book
-   hosts: all_srv
+   hosts: "{{ list_hosts }}"
    become: true
 
    tasks:

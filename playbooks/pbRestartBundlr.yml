@@ -1,0 +1,14 @@
+---
+ - name: restart bundlr
+   hosts: "{{ list_hosts }}"
+   become: true
+
+   tasks:
+
+    - name: shell
+      shell: chdir=$HOME/bundlr/validator-rust docker-compose restart
+      register: shell_out
+
+    - name: print shell
+      debug: var=shell_out.stdout_lines
+

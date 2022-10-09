@@ -38,6 +38,9 @@ ansible-playbook $HOME/AnsibleWorkSpace/playbooks/pbSolanaVersion.yml --extra-va
 ```
 ansible-playbook $HOME/AnsibleWorkSpace/playbooks/bundlr.yml
 ```
+```
+ansible-playbook $HOME/AnsibleWorkSpace/playbooks/pbRestartBundlr.yml --extra-var "list_hosts=$HOSTS"
+```
 ## Massa
 ```
 ansible-playbook $HOME/AnsibleWorkSpace/playbooks/massa_info.yaml --extra-vars "pwd=$PASSWORD"

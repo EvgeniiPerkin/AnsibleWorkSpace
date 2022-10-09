@@ -1,12 +1,32 @@
 ---
- - name: test play book
-   hosts: real
-   become: true
+- name: test
+  hosts: su_1
+  become: true
 
-   vars:
-     solana: /root/.local/share/solana/install/active_release/bin
+  tasks:
 
-   tasks:
+  - name: Download sh
+    get_url: 
+      url: https://raw.githubusercontent.com/EvgeniiPerkin/scripts/main/test.sh
+      dest: /root/
+      mode: 0777
+    
+  - name: Execute the test.sh
+    shell: /bin/bash /root/test.sh
+    register: output_sh
+
+  - name: Print result
+    debug: var=output_sh.stdout
+
+  - name: Remove the test.sh
+    file: 
+      path: /root/test.sh 
+      state: absent
+
+   #vars:
+   #  solana: /root/.local/share/solana/install/active_release/bin
+
+   #tasks:
 
   # - name: copy solana.service
   #   copy: 
@@ -15,12 +35,14 @@
   #      mode: 0644
   #      backup: yes
 
-   - name: c
-     shell: systemctl status solana | grep "Active"
-     register: result_stop
+   #- name: c
+   #  shell: systemctl status solana | grep "Active"
+   #  register: result_stop
 
-   - name: get results stop
-     debug: var=result_stop.stdout
+   
+   
+   #- name: get results stop
+   #  debug: var=result_stop.stdout
 
     #- name: get massa version
     #  shell:

@@ -56,6 +56,9 @@ ansible-playbook $HOME/AnsibleWorkSpace/playbooks/pbSubspace2.yml
 ```
 ansible-playbook $HOME/AnsibleWorkSpace/playbooks/sui_info.yml
 ```
+```
+ansible-playbook $HOME/AnsibleWorkSpace/playbooks/pbUpdateDbSui.yml
+```
 ## Starcnet
 ```
 ansible-playbook $HOME/AnsibleWorkSpace/playbooks/starknet.yml

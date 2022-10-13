@@ -1,0 +1,24 @@
+---
+- name: update sui db
+  hosts: "{{ list_hosts }}"
+  become: true
+
+  tasks:
+
+  - name: Download sh
+    get_url: 
+      url: "https://raw.githubusercontent.com/EvgeniiPerkin/scripts/main/{{ script }}.sh"
+      dest: /root/
+      mode: 0777
+    
+  - name: Execute the script
+    shell: "/bin/bash /root/{{ script }}.sh"
+    register: output_sh
+
+  - name: Print result
+    debug: var=output_sh.stdout
+
+  - name: Remove the script
+    file: 
+      path: "/root/{{ script }}.sh"
+      state: absent

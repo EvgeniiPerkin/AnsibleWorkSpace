@@ -56,9 +56,6 @@ ansible-playbook $HOME/AnsibleWorkSpace/playbooks/pbSubspace2.yml
 ```
 ansible-playbook $HOME/AnsibleWorkSpace/playbooks/sui_info.yml
 ```
-```
-ansible-playbook $HOME/AnsibleWorkSpace/playbooks/pbUpdateDbSui.yml
-```
 ## Starcnet
 ```
 ansible-playbook $HOME/AnsibleWorkSpace/playbooks/starknet.yml
@@ -73,10 +70,16 @@ ansible-playbook $HOME/AnsibleWorkSpace/playbooks/PlayBookPing.yml --extra-var "
 ```
 ansible-playbook $HOME/AnsibleWorkSpace/playbooks/pbUpdatePackages.yml --extra-var "list_hosts=$HOSTS"
 ```
+### Execut the script on a remote hosts.
+
+```
+ansible-playbook $HOME/AnsibleWorkSpace/playbooks/pbExecuteScript.yml --extra-var "list_hosts=$HOSTS script=$SCRIPT"
+```
 -----------------------------
 ### Description of variables
 * $HOSTS    - (example: all_srv).
 * $VERSION  - (example: 1.10.13).
 * $PASSWORD - (example: querty).
+* $SCRIPT   - (example: update_sui).
 ----------------------------
 #### Other playbooks are not used.

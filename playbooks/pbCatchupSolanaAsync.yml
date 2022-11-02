@@ -1,0 +1,19 @@
+---
+ - name: get catchup for solana
+   hosts: "{{ list_hosts }}"
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+   - name: get catchup
+     shell: "{{ solana }}/solana catchup --our-localhost"
+     async: 15
+     poll: 5
+     register: result_operation
+
+   - name: Get results
+     debug: var=result_operation.stdout_lines
+     

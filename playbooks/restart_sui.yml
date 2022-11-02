@@ -1,0 +1,21 @@
+---
+- name: restart suid
+  hosts: "{{ list_hosts }}"
+  become: true
+
+  tasks:
+    
+  - name: restart suid
+    shell: systemctl restart suid
+    register: output_sh
+
+  - name: get results restart
+    debug: var=output_sh.stdout_lines
+
+  - name: query info
+    shell: journalctl -u suid -n -o cat
+    register: output_sui
+
+  - name: get result info
+    debug:
+     var: output_sui.stdout_lines

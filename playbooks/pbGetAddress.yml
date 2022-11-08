@@ -1,0 +1,17 @@
+---
+ - name: get solana address
+   hosts: "{{ list_hosts }}"
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+   - name: get address
+     shell: "{{ solana }}/solana address"
+     register: result_operation
+
+   - name: Get results
+     debug: var=result_operation.stdout_lines
+

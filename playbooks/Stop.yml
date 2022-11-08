@@ -1,0 +1,12 @@
+---
+ - name: stop solana service
+   hosts: "{{ list_hosts }}"
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+    - name: stop
+      shell: "systemctl stop solana"

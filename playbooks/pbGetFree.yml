@@ -1,0 +1,14 @@
+---
+ - name: get free
+   hosts: "{{ list_hosts }}"
+   become: yes
+
+   tasks:
+
+    - name: get info
+      shell: "free -h"
+      register: v
+
+    - name: print info
+      debug: var=v.stdout_lines
+

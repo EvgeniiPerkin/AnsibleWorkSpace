@@ -1,3 +1,132 @@
 ---
-- name: create
-# tasks file for install_solana
+
+- name: update and upgrade apt packages
+  apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400
+
+- name: install packages
+  apt: pkg={{item}} state=latest
+  with_items:
+    - wget
+    - curl
+    - vim
+    - git
+    - python3-venv
+
+- name: Download sh
+  get_url: 
+      url: "https://release.solana.com/v1.13.4/install"
+      dest: /root/
+      mode: 0777
+    
+- name: Execute the script
+  shell: "/bin/bash /root/install"
+  register: output_sh
+
+- name: Print result
+  debug: var=output_sh.stdout
+
+- name: Remove the script
+  file: 
+      path: "/root/install"
+      state: absent
+
+- name: export path
+  lineinfile: 
+      path: /root/.profile
+      line: export PATH="/root/.local/share/solana/install/active_release/bin:$PATH"
+
+- name: create dir solana
+  file: 
+      path: /root/solana
+      state: directory 
+
+- name: clone finder
+  ansible.builtin.git:
+    repo: 'https://github.com/c29r3/solana-snapshot-finder.git'
+    dest: /root/solana/solana-snapshot-finder
+    update: no
+
+- name: python3 venv 
+  shell: chdir=/root/solana/solana-snapshot-finder python3 -m venv venv
+
+- name: insatall requirements python lib 
+  ansible.builtin.pip:
+    requirements: /root/solana/solana-snapshot-finder/requirements.txt
+
+- name: create dir ledger
+  file: 
+      path: /root/solana/ledger
+      state: directory
+
+- name: set config network
+  shell: "{{ solana_path }}/solana config set --url https://api.mainnet-beta.solana.com"
+
+- name: set config validator-keypair
+  shell: "{{ solana_path }}/solana config set --keypair /root/solana/validator-keypair.json"
+
+- name: added sysctl params in file 
+  shell: |
+      cat >/etc/sysctl.d/21-solana-validator.conf <<EOF
+      # Increase UDP buffer sizes
+      net.core.rmem_default = 134217728
+      net.core.rmem_max = 134217728
+      net.core.wmem_default = 134217728
+      net.core.wmem_max = 134217728
+
+      # Increase memory mapped files limit
+      vm.max_map_count = 1000000
+
+      # Increase number of allowed open file descriptors
+      fs.nr_open = 1000000
+      EOF
+  args:
+      executable: /bin/bash
+
+- name: sysctl changed
+  shell: sysctl -p /etc/sysctl.d/21-solana-validator.conf
+  register: sysctl
+
+- name: Print sysctl
+  debug: var=sysctl.stdout
+
+- name: daemon-reload
+  systemd:
+      daemon-reload: yes
+      
+- name: add file conf
+  shell: |
+      cat >/etc/security/limits.d/90-solana-nofiles.conf <<EOF
+      # Increase process file descriptor count limit
+      * - nofile 1000000
+      EOF
+  args:
+      executable: /bin/bash
+
+- name: add solana.logrotate
+  template: src=logrotate.j2 dest=/root/solana/solana.logrotate mode=a+x
+
+- name: add solana.service
+  template: src=service.j2 dest=/root/solana/solana.service mode=a+x
+
+- name: create symbolic link solana service
+  file: 
+      src: /root/solana/solana.service
+      dest: /etc/systemd/system/solana.service
+      state: link
+
+- name: create symbolic link
+  file: 
+      src: /root/solana/solana.logrotate
+      dest: /etc/logrotate.d/solana.logrotate
+      state: link
+
+- name: daemon-reload
+  systemd:
+      daemon-reload: yes
+  
+
+
+

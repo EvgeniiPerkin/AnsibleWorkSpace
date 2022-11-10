@@ -4,24 +4,42 @@
   become: true
 
   tasks:
+    - name: added sysctl params in file 
+      shell: |
+          cat >/root/test.conf <<EOF
+          1
+          2
+          3
+          EOF
 
-  - name: Download sh
-    get_url: 
-      url: https://raw.githubusercontent.com/EvgeniiPerkin/scripts/main/test.sh
-      dest: /root/
-      mode: 0777
-    
-  - name: Execute the test.sh
-    shell: /bin/bash /root/test.sh
-    register: output_sh
+    - name: export path
+      lineinfile: 
+          path: /root/test.conf
+          line: export PATH="/root/.local/share/solana/install/active_release/bin:$PATH"
 
-  - name: Print result
-    debug: var=output_sh.stdout
+    - name: create symbolic link
+      file: 
+          src: /root/test.conf
+          dest: /etc/logrotate.d/test.conf
+          state: link
+ 
+  #- name: Download sh
+  #  get_url: 
+  #    url: https://raw.githubusercontent.com/EvgeniiPerkin/scripts/main/test.sh
+  #    dest: /root/
+  #    mode: 0777
+  #  
+  #- name: Execute the test.sh
+  #  shell: /bin/bash /root/test.sh
+  #  register: output_sh
 
-  - name: Remove the test.sh
-    file: 
-      path: /root/test.sh 
-      state: absent
+  #- name: Print result
+  #  debug: var=output_sh.stdout
+
+  #- name: Remove the test.sh
+  #  file: 
+  #    path: /root/test.sh 
+  #    state: absent
 
    #vars:
    #  solana: /root/.local/share/solana/install/active_release/bin

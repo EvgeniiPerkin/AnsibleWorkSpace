@@ -1,0 +1,16 @@
+---
+ - name: solana restart (main)
+   hosts: "{{ list_hosts }}"
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+   - name: launch the restart
+     shell: "{{ solana }}/solana-validator --ledger /root/solana/ledger/  wait-for-restart-window && systemctl restart solana.service && {{ solana }}/solana --version"
+     register: result_restart
+
+   - name: get results restart
+     debug: var=result_restart.stdout_lines⏎

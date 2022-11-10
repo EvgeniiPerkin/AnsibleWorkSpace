@@ -14,6 +14,7 @@
     - vim
     - git
     - python3-venv
+    - python3-pip
 
 - name: Download sh
   get_url: 

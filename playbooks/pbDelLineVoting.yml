@@ -1,0 +1,26 @@
+---
+ - name: delete line --no-voting in service file and restart solana
+   hosts: "{{ list_hosts }}"
+   become: true
+
+   vars:
+     solana: /root/.local/share/solana/install/active_release/bin
+
+   tasks:
+
+   - name: Delete line in solana.service
+     lineinfile: 
+         path: /root/solana/solana.service
+         regexp: --no-voting
+         state: absent
+
+   - name: daemon-reload
+     systemd:
+         daemon-reload: yes
+
+   - name: launch the restart
+     shell: "systemctl restart solana.service && {{ solana }}/solana --version"
+     register: result_restart
+
+   - name: get results restart
+     debug: var=result_restart.stdout_lines

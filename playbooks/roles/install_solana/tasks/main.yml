@@ -18,7 +18,7 @@
 
 - name: Download sh
   get_url: 
-      url: "https://release.solana.com/v1.13.4/install"
+      url: "https://release.solana.com/v1.13.5/install"
       dest: /root/
       mode: 0777
     

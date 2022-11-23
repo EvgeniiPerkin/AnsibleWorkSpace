@@ -1,0 +1,7 @@
+---
+ - name: installing clean solana
+   hosts: "{{ list_hosts }}"
+   become: true
+
+   roles:
+     - install_solana_test

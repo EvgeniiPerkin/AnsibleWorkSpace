@@ -1,0 +1,13 @@
+---
+ - name: get aleo info
+   hosts: aleo_prover
+   become: true
+
+   tasks:
+   - name: query info
+     shell: journalctl -u aleo-prover -n
+     register: output_aleo
+
+   - name: get result info
+     debug:
+      var: output_aleo.stdout_lines
